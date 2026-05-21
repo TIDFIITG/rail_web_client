@@ -43,32 +43,27 @@ function Body() {
     return () => clearInterval(interval);
   }, []);
 
-  // Function to fetch active chain status alerts from the server
-  const fetchChainAlerts = async () => {
-    // Removed login check - now fetches for all users
-    
-    try {
-      const response = await fetch('http://localhost:1000/api/coach/active-chain-pulls');
-      const data = await response.json();
-      
-      if (response.ok) {
-        if (data.alerts && data.alerts.length > 0) {
-          setChainAlerts(currentAlerts => {
-            const existingIds = new Set(currentAlerts.map(alert => alert._id));
-            const newAlerts = data.alerts.filter(alert => !existingIds.has(alert._id));
-            return [...newAlerts, ...currentAlerts];
-          });
-          console.log(`Received ${data.alerts.length} new alerts`);
-        }
-      } else {
-        console.error('API Error:', data.message);
+  // Function to fetch recent chain status records
+const fetchChainAlerts = async () => {
+  try {
+    const response = await fetch(
+      'http://localhost:1000/api/coach/recent-chain-status'
+    );
+    const data = await response.json();
+    if (response.ok) {
+      if (data.alerts) {
+        // Directly set latest 5 records
+        setChainAlerts(data.alerts.slice(0, 5));
       }
-    } catch (error) {
-      console.error('Error fetching chain alerts:', error);
-    } finally {
-      setLoading(false);
+    } else {
+      console.error('API Error:', data.message);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching chain alerts:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Function to dismiss a specific alert
   const handleDismissAlert = (alertToDismiss) => {
@@ -130,12 +125,12 @@ function Body() {
     };
   }, []);
 
-  // Fetch alerts on component mount and set up polling for all users
-  useEffect(() => {
-    fetchChainAlerts();
-    const interval = setInterval(fetchChainAlerts, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    // Fetch alerts on component mount and set up polling for all users
+    useEffect(() => {
+      fetchChainAlerts();
+      const interval = setInterval(fetchChainAlerts, 10000);
+      return () => clearInterval(interval);
+    }, []);
 
   // Function to format timestamp for better readability
   const formatTime = (isoString) => {
