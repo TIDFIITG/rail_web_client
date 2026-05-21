@@ -47,7 +47,7 @@ function Body() {
 const fetchChainAlerts = async () => {
   try {
     const response = await fetch(
-      'https://rail-web-server.onrender.com/api/coach/active-chain-pulls'
+      'https://rail-web-server-r7z1.onrender.com/api/coach/active-chain-pulls'
     );
     const data = await response.json();
     if (response.ok) {
