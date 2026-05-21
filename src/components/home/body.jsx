@@ -47,7 +47,7 @@ function Body() {
 const fetchChainAlerts = async () => {
   try {
     const response = await fetch(
-      'http://localhost:1000/api/coach/recent-chain-status'
+      'https://rail-web-server.onrender.com/api/coach/recent-chain-status'
     );
     const data = await response.json();
     if (response.ok) {
