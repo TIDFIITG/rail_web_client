@@ -277,7 +277,7 @@ const fetchChainAlerts = async () => {
                             🚨 Emergency chain activated
                           </h3>
                           <p className="text-sm text-gray-600 mt-1">
-                            {alert.train_Name} ({alert.train_Number}) • Coach {alert.coach_uid}
+                            {alert.train_Name} ({alert.train_Number}) • Coach {alert.coach_name}
                           </p>
                           {/* <p className="text-red-700 text-sm mt-2 font-medium">
                             Coach {alert.coach_uid}
