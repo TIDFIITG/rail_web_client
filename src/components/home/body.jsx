@@ -210,17 +210,17 @@ const fetchChainAlerts = async () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float animation-delay-1000"></div>
-          <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-full mix-blend-multiply filter blur-lg opacity-30 animate-bounce-subtle"></div>
+          <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-full mix-blend-multiply filter blur-lg opacity-30"></div>
         </div>
 
         {/* Notice Board Section - Now visible for all users */}
         <div className={`w-full mb-8 transform transition-all duration-1000 ease-out ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'
         } animate-slide-in-up`}>
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-500 animate-pulse-glow">
-            <div className="bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white px-6 py-4 flex justify-between items-center animate-gradient-shift">
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-500">
+            <div className="bg-gradient-to-r from-rose-500 to-red-500 text-white px-6 py-4 flex justify-between items-center">
               <h2 className="text-xl font-bold flex items-center">
-                <div className="w-6 h-6 mr-3 animate-bounce-subtle">
+                <div className="w-6 h-6 mr-3">
                   <svg fill="currentColor" viewBox="0 0 20 20" className="w-full h-full">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -232,15 +232,15 @@ const fetchChainAlerts = async () => {
                   </span>
                 )}
               </h2>
-              {chainAlerts.length > 0 && (
+              {/* {chainAlerts.length > 0 && (
                 <button
                   onClick={handleClearAllAlerts}
                   className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
                   title="Clear all alerts"
-                >
+                > 
                   Clear All
                 </button>
-              )}
+              )} */}
             </div>
             
             <div className="p-6 max-h-48 overflow-y-auto">
@@ -252,7 +252,7 @@ const fetchChainAlerts = async () => {
               ) : chainAlerts.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
-                    <svg className="w-6 h-6 mr-2 animate-bounce-subtle" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     No Chain Pulled - All Systems Normal
@@ -263,7 +263,7 @@ const fetchChainAlerts = async () => {
                   {chainAlerts.map((alert, index) => (
                     <div 
                       key={alert._id || index} 
-                      className={`relative bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl p-4 shadow-md transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up`}
+                      className={`relative bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up`}
                       style={{ animationDelay: `${index * 150}ms` }}
                     >
                       <div className="flex items-start">
@@ -274,13 +274,16 @@ const fetchChainAlerts = async () => {
                         </div>
                         <div className="ml-4 flex-1">
                           <h3 className="text-red-800 font-bold text-lg">
-                            🚨 ALERT: Chain Pulled - Train {alert.train_Number}
+                            🚨 Emergency chain activated
                           </h3>
-                          <p className="text-red-700 text-sm mt-2 font-medium">
-                            Coach: {alert.coach} | Status: {alert.chain_status}
+                          <p className="text-sm text-gray-600 mt-1">
+                            {alert.train_Name} ({alert.train_Number}) • Coach {alert.coach_uid}
                           </p>
+                          {/* <p className="text-red-700 text-sm mt-2 font-medium">
+                            Coach {alert.coach_uid}
+                          </p> */}
                           <p className="text-red-600 text-xs mt-2">
-                            Time: {formatTime(alert.createdAt)}
+                            🕒 {formatTime(alert.createdAt)}
                           </p>
                           {alert.location && (alert.latitude || alert.longitude) && (
                             <p className="text-red-600 text-xs mt-1">
@@ -290,8 +293,7 @@ const fetchChainAlerts = async () => {
                         </div>
                         <button 
                           onClick={() => handleDismissAlert(alert)} 
-                          className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition-all duration-300 transform hover:scale-125 hover:rotate-90 p-1 rounded-full hover:bg-white/50"
-                          title="Dismiss Alert"
+                          className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-all duration-200 p-1"
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -314,17 +316,17 @@ const fetchChainAlerts = async () => {
           } animate-slide-in-left`}>
             
             {/* Status Badge */}
-            <div className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg mb-8 border border-white/30 animate-bounce-subtle">
+            <div className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg mb-8 border border-white/30">
               <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
               <span className="text-indigo-700 font-semibold text-sm tracking-wide">🚀 LIVE RAILWAY MONITORING</span>
             </div>
 
-            {/* Animated Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 drop-shadow-lg animate-gradient-shift">
+            {/* Main Heading */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-indigo-700">
               Welcome to{' '}
-              <span className="relative">
+              <span className="relative text-purple-700">
                 Rail Watch
-                <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full animate-pulse"></div>
+                <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
               </span>
             </h1>
 
@@ -342,7 +344,7 @@ const fetchChainAlerts = async () => {
             {/* Rotating Feature Highlight */}
             <div className="mt-6 animate-slide-in-up animation-delay-600">
               <div className="flex items-center justify-center lg:justify-start space-x-3 p-4 bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 transform hover:scale-105 transition-all duration-300">
-                <span className="text-3xl animate-bounce-subtle">{features[currentFeature].icon}</span>
+                <span className="text-3xl ">{features[currentFeature].icon}</span>
                 <span className={`font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r ${features[currentFeature].color}`}>
                   {features[currentFeature].text}
                 </span>
@@ -379,7 +381,7 @@ const fetchChainAlerts = async () => {
 
               {/* App Installed Message */}
               {isInstalled && (
-                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full border border-green-300 shadow-lg animate-bounce-subtle">
+                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full border border-green-300 shadow-lg">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -405,8 +407,8 @@ const fetchChainAlerts = async () => {
               />
               
               {/* Floating decorative elements */}
-              <div className="absolute top-1/4 -left-4 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-bounce-subtle animation-delay-200"></div>
-              <div className="absolute top-3/4 -right-4 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-bounce-subtle animation-delay-600"></div>
+              <div className="absolute top-1/4 -left-4 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full  animation-delay-200"></div>
+              <div className="absolute top-3/4 -right-4 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animation-delay-600"></div>
               <div className="absolute bottom-1/4 -left-3 w-2 h-2 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-full animate-float animation-delay-1000"></div>
             </div>
           </div>
