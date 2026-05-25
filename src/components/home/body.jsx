@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { assets } from "../../assets/assets";
+import { useNavigate } from 'react-router-dom';
 
 function Body() {
   // Authentication state - replace this with your actual auth logic
@@ -17,6 +18,8 @@ function Body() {
   // Animation states
   const [isVisible, setIsVisible] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
+
+  const navigate = useNavigate();
 
   // Check authentication status - replace with your actual auth check
   useEffect(() => {
@@ -262,8 +265,13 @@ const fetchChainAlerts = async () => {
                 <div className="space-y-4">
                   {chainAlerts.map((alert, index) => (
                     <div 
-                      key={alert._id || index} 
-                      className={`relative bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up`}
+                      key={alert._id || index}
+                      onClick={() =>
+                        navigate(
+                          `/coach-details/${alert.train_Number}/${alert.coach_uid}`
+                        )
+                      }
+                      className={`relative bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up cursor-pointer`}
                       style={{ animationDelay: `${index * 150}ms` }}
                     >
                       <div className="flex items-start">
