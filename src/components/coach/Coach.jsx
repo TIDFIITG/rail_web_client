@@ -6,6 +6,8 @@ import { IoDownloadOutline } from "react-icons/io5";
 // Import only jsPDF - no autotable dependency
 import { jsPDF } from 'jspdf';
 
+import { MapPinned } from "lucide-react";
+
 // Cache invalidation: v2.0
 
 const CoachDetails = () => {
@@ -119,7 +121,7 @@ const CoachDetails = () => {
       
       // Table header
       const colWidths = [18, 18, 12, 15, 12, 12, 12, 10, 12, 10];
-      const headers = ['Train #', 'Train Name', 'Coach UID', 'Chain', 'Latitude', 'Longitude', 'Memory', 'Error', 'Date', 'Time'];
+      const headers = ['Train #', 'Train Name', 'Coach UID', 'Chain', 'Latitude', 'Longitude', 'Memory', 'Map', 'Date', 'Time'];
       
       // Draw header row with background
       doc.setFillColor(75, 0, 130);
@@ -170,18 +172,17 @@ const CoachDetails = () => {
           });
         }
 
-        // Row data
         const rowData = [
           String(data.train_Number || 'N/A'),
           String(data.train_Name || 'N/A').slice(0, 12),
           String(data.coach_uid || 'N/A'),
-          String(data.chain_status || 'N/A'),
+          String(data.chain_status || 'N/A'), 
           String(data.latitude ?? 'N/A').slice(0, 8),
           String(data.longitude ?? 'N/A').slice(0, 8),
           String(data.memory ?? 'N/A').slice(0, 8),
-          String(data.error || 'N/A'),
           String(data.date || 'N/A'),
-          String(data.time || 'N/A')
+          String(data.time || 'N/A'),
+          `https://maps.google.com/?q=${data.latitude},${data.longitude}`
         ];
 
         xPos = marginLeft;
@@ -223,9 +224,9 @@ const CoachDetails = () => {
       "Latitude",
       "Longitude",
       "Memory",
-      "Error",
       "Date",
-      "Time"
+      "Time",
+      "Map"
     ];
 
     const rows = coachData.map(data => [
@@ -236,9 +237,9 @@ const CoachDetails = () => {
       data.latitude || "N/A",
       data.longitude || "N/A",
       data.memory || "N/A",
-      data.error || "N/A",
       data.date || "N/A",
       data.time || "N/A",
+      `https://maps.google.com/?q=${data.latitude},${data.longitude}`,
     ]);
 
     const csvContent = [
@@ -342,9 +343,9 @@ const CoachDetails = () => {
                   <th className="p-4 text-white font-semibold">Latitude</th>
                   <th className="p-4 text-white font-semibold">Longitude</th>
                   <th className="p-4 text-white font-semibold">Memory</th>
-                  <th className="p-4 text-white font-semibold">Error</th>
                   <th className="p-4 text-white font-semibold">Date</th>
                   <th className="p-4 text-white font-semibold">Time</th>
+                  <th className="p-4 text-white font-semibold">Map</th>
                 </tr>
               </thead>
               <tbody>
@@ -358,9 +359,22 @@ const CoachDetails = () => {
                       <td className="p-4 text-purple-100">{data.latitude || "N/A"}</td>
                       <td className="p-4 text-purple-100">{data.longitude || "N/A"}</td>
                       <td className="p-4 text-purple-100">{data.memory || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.error || "N/A"}</td>
                       <td className="p-4 text-purple-100">{data.date || "N/A"}</td>
                       <td className="p-4 text-purple-100">{data.time || "N/A"}</td>
+                      <td className="p-4">
+                        <button
+                          onClick={() =>
+                            window.open(
+                              `https://www.google.com/maps?q=${data.latitude},${data.longitude}`,
+                              "_blank"
+                            )
+                          }
+                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-300"
+                          title="Open Location"
+                        >
+                          <MapPinned size={18} />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
