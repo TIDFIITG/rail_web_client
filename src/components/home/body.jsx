@@ -19,6 +19,8 @@ function Body() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
 
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
+
   const navigate = useNavigate();
 
   // Check authentication status - replace with your actual auth check
@@ -50,13 +52,14 @@ function Body() {
 const fetchChainAlerts = async () => {
   try {
     const response = await fetch(
-      'https://rail-web-server-r7z1.onrender.com/api/coach/active-chain-pulls'
-    );
+      `${import.meta.env.VITE_API_URL}/api/coach/active-chain-pulls`
+    )
     const data = await response.json();
     if (response.ok) {
       if (data.alerts) {
         // Directly set latest 5 records
-        setChainAlerts(data.alerts.slice(0, 5));
+        console.log("ALERT COUNT:", data.alerts.length);
+        setChainAlerts(data.alerts);
       }
     } else {
       console.error('API Error:', data.message);
@@ -229,10 +232,13 @@ const fetchChainAlerts = async () => {
                   </svg>
                 </div>
                 Chain Status Notice Board
+                <p className="text-white ml-4">
+                 Total Alerts: {chainAlerts.length}
+                </p>
                 {chainAlerts.length > 0 && (
-                  <span className="ml-3 bg-white text-red-600 px-3 py-1 rounded-full text-sm font-bold animate-pulse shadow-lg">
-                    {chainAlerts.length}
-                  </span>
+                <span className="ml-3 bg-white text-red-600 px-3 py-1 rounded-full text-sm font-bold animate-pulse shadow-lg">
+                  {chainAlerts.length}
+                </span>
                 )}
               </h2>
               {/* {chainAlerts.length > 0 && (
@@ -246,7 +252,7 @@ const fetchChainAlerts = async () => {
               )} */}
             </div>
             
-            <div className="p-6 max-h-48 overflow-y-auto">
+            <div className="p-6 max-h-[500px] overflow-y-auto">
               {loading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
@@ -262,55 +268,68 @@ const fetchChainAlerts = async () => {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {chainAlerts.map((alert, index) => (
-                    <div 
-                      key={alert._id || index}
-                      onClick={() =>
-                        navigate(
-                          `/coach-details/${alert.train_Number}/${alert.coach_uid}`
-                        )
-                      }
-                      className={`relative bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up cursor-pointer`}
-                      style={{ animationDelay: `${index * 150}ms` }}
-                    >
-                      <div className="flex items-start">
-                        <div className="flex-shrink-0">
-                          <svg className="w-6 h-6 text-red-500 mt-1 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div className="ml-4 flex-1">
-                          <h3 className="text-red-800 font-bold text-lg">
-                            🚨 Emergency chain activated
-                          </h3>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {alert.train_Name} ({alert.train_Number}) • Coach {alert.coach_name}
-                          </p>
-                          {/* <p className="text-red-700 text-sm mt-2 font-medium">
-                            Coach {alert.coach_uid}
-                          </p> */}
-                          <p className="text-red-600 text-xs mt-2">
-                            🕒 {formatTime(alert.createdAt)}
-                          </p>
-                          {alert.location && (alert.latitude || alert.longitude) && (
-                            <p className="text-red-600 text-xs mt-1">
-                              📍 Location: {alert.latitude}, {alert.longitude}
+                <>
+                  <div className="space-y-4">
+                    {(showAllAlerts ? chainAlerts : chainAlerts.slice(0, 5)).map((alert, index) => (
+                      <div 
+                        key={alert._id || index}
+                        onClick={() =>
+                          navigate(
+                            `/coach-details/${alert.train_Number}/${alert.coach_uid}`
+                          )
+                        }
+                        className={`relative bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 transform transition-all duration-500 hover:scale-102 hover:shadow-lg animate-slide-in-up cursor-pointer`}
+                        style={{ animationDelay: `${index * 150}ms` }}
+                      >
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0">
+                            <svg className="w-6 h-6 text-red-500 mt-1 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="ml-4 flex-1">
+                            <h3 className="text-red-800 font-bold text-lg">
+                              🚨 Emergency chain activated
+                            </h3>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {alert.train_Name} ({alert.train_Number}) • Coach {alert.coach_name}
                             </p>
-                          )}
+                            {/* <p className="text-red-700 text-sm mt-2 font-medium">
+                              Coach {alert.coach_uid}
+                            </p> */}
+                            <p className="text-red-600 text-xs mt-2">
+                              🕒 {formatTime(alert.createdAt)}
+                            </p>
+                            {alert.location && (alert.latitude || alert.longitude) && (
+                              <p className="text-red-600 text-xs mt-1">
+                                📍 Location: {alert.latitude}, {alert.longitude}
+                              </p>
+                            )}
+                          </div>
+                          <button 
+                            onClick={() => handleDismissAlert(alert)} 
+                            className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-all duration-200 p-1"
+                          >
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </button>
                         </div>
-                        <button 
-                          onClick={() => handleDismissAlert(alert)} 
-                          className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-all duration-200 p-1"
-                        >
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                  {chainAlerts.length > 5 && (
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => setShowAllAlerts(!showAllAlerts)}
+                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg transition-all duration-300"
+                    >
+                      {showAllAlerts ? 'Show Less' : 'View All Alerts'}
+                    </button>
+                  </div>
+                )}
+   
+              </>
               )}
             </div>
           </div>
