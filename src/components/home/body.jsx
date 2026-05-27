@@ -232,14 +232,6 @@ const fetchChainAlerts = async () => {
                   </svg>
                 </div>
                 Chain Status Notice Board
-                <p className="text-white ml-4">
-                 Total Alerts: {chainAlerts.length}
-                </p>
-                {chainAlerts.length > 0 && (
-                <span className="ml-3 bg-white text-red-600 px-3 py-1 rounded-full text-sm font-bold animate-pulse shadow-lg">
-                  {chainAlerts.length}
-                </span>
-                )}
               </h2>
               {/* {chainAlerts.length > 0 && (
                 <button
@@ -252,7 +244,7 @@ const fetchChainAlerts = async () => {
               )} */}
             </div>
             
-            <div className="p-6 max-h-[500px] overflow-y-auto">
+            <div className="p-5 max-h-[320px] overflow-y-auto">
               {loading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
@@ -324,7 +316,7 @@ const fetchChainAlerts = async () => {
                       onClick={() => setShowAllAlerts(!showAllAlerts)}
                       className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg transition-all duration-300"
                     >
-                      {showAllAlerts ? 'Show Less' : 'View All Alerts'}
+                      {showAllAlerts ? 'Show Less' : 'View More Alerts'}
                     </button>
                   </div>
                 )}
