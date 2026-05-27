@@ -60,6 +60,7 @@ const Footer = () => {
             
             {/* Developer Info */}
             <div className="space-y-2">
+              <p className="text-gray-400 text-sm">Devarpana Tribedi</p>
               <p className="text-gray-400 text-sm">Akarshan Ghosh</p>
               <a 
                 href="mailto:contact@akarshanghosh.dev" 
@@ -74,7 +75,7 @@ const Footer = () => {
             <div className="flex items-center space-x-4 pt-2">
               {/* GitHub Link */}
               <a
-                href="https://github.com/AkarshanGhosh"
+                href="https://github.com/Devarpana"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub Profile"
@@ -88,7 +89,7 @@ const Footer = () => {
 
               {/* LinkedIn Link */}
               <a
-                href="https://www.linkedin.com/in/akarshan-ghosh/"
+                href="https://www.linkedin.com/in/devarpana-tribedi"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn Profile"
@@ -126,7 +127,7 @@ const Footer = () => {
             {/* Copyright Information */}
             <div className="flex items-center space-x-2 text-sm text-gray-500">
               <span>&copy; {new Date().getFullYear()}</span>
-              <span className="text-blue-400 font-semibold">Akarshan Ghosh</span>
+              <span className="text-blue-400 font-semibold">Devarpana Tribedi</span>
               <span>• All Rights Reserved</span>
             </div>
 
