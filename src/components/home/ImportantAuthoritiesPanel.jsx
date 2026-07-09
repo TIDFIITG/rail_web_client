@@ -21,13 +21,13 @@ const AUTHORITIES = [
   {
     id: "rail-minister",
     name: "Ashwini Vaishnaw",
-    designation: "Ministry of Railways",
+    designation: "Railway Minister",
     image: RailwayMinister,
   },
   {
     id: "nfr-gm",
     name: "Chetan Kumar Shrivastava",
-    designation: "North Frontier Railway General Manager",
+    designation: "Railway General Manager, North Frontier",
     image: GM,
   },
   {
@@ -38,8 +38,8 @@ const AUTHORITIES = [
   },
   {
     id: "project-director",
-    name: "Dr. S. K. Dwivedy",
-    designation: "Project Director",
+    name: "Prof. S. K. Dwivedy",
+    designation: "Project Director, Technology Innovation Hub",
     image: PD,
   },
 ];
