@@ -1,6 +1,8 @@
 // src/App.jsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import HomePageHeader from './components/home/HomePageHeader.jsx';
+import OrganizationHeader from './components/home/OrganizationHeader.jsx';
 
 // Pages & Components
 import Home from './pages/Home.jsx';
@@ -70,9 +72,14 @@ function InstallPWAInline() {
   );
 }
 
-export default function App() {
+function AppLayout() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   return (
     <div className="flex min-h-screen flex-col">
+      {isHome && <HomePageHeader />}
+      {isHome && <OrganizationHeader />}
       <Navbar />
 
       <div className="flex-grow">
@@ -117,4 +124,8 @@ export default function App() {
       <InstallPWAInline />
     </div>
   );
+}
+
+export default function App() {
+  return <AppLayout />;
 }

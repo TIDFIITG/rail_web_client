@@ -6,6 +6,18 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        railway: {
+          blue: "#0B4F8C",
+          navy: "#173F6B",
+          red: "#D32F2F",
+          success: "#2E7D32",
+          warning: "#F9A825",
+          bg: "#F4F6F9",
+          border: "#D9E2EC",
+          text: "#1F2937",
+        },
+      },
       fontFamily: {
         funky1: ['"Comic Sans MS"', 'cursive'],
         funky2: ['"Papyrus"', 'fantasy'],

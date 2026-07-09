@@ -1,13 +1,9 @@
 import Body from "../components/home/body";
 
-
-
 const Home = () => {
   return (
-    <div className="bg-white text-white px-10 py-8 min-h-screen">
+    <div className="min-h-screen bg-railway-bg">
       <Body />
-      
-      
     </div>
   );
 };
