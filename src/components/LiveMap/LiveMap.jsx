@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-const INDIA_CENTER = [20.5937, 78.9629];
+const INDIA_CENTER = [22.9734, 78.6569];
 const INDIA_ZOOM = 5;
 
 const MARKER_DATA = [
@@ -15,7 +15,7 @@ const MARKER_DATA = [
     coach: "S5",
     latitude: 21.1458,
     longitude: 79.0882,
-    status: "On Schedule",
+    status: "Running",
     isEmergency: false,
   },
   {
@@ -25,7 +25,7 @@ const MARKER_DATA = [
     coach: "A2",
     latitude: 13.0827,
     longitude: 80.2707,
-    status: "On Schedule",
+    status: "Running",
     isEmergency: false,
   },
   {
@@ -43,50 +43,70 @@ const MARKER_DATA = [
 const createMarkerIcon = (isEmergency) =>
   L.divIcon({
     className: "",
-    html: `<div style="
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: ${isEmergency ? "#D32F2F" : "#0B4F8C"};
-      border: 2px solid #ffffff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-    "></div>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
+    html: `
+      <div style="
+        width:16px;
+        height:16px;
+        border-radius:50%;
+        background:${isEmergency ? "#D32F2F" : "#1565C0"};
+        border:3px solid white;
+        box-shadow:0 2px 8px rgba(0,0,0,.35);
+      "></div>
+    `,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
     popupAnchor: [0, -8],
   });
 
-const MapPopup = ({ trainName, trainNumber, coach, latitude, longitude, status, isEmergency }) => (
-  <div className="min-w-[200px] space-y-2 p-1">
-    <p className="text-sm font-semibold text-gray-900">{trainName}</p>
-    <dl className="space-y-1 text-xs text-gray-600">
-      <div className="flex justify-between gap-4">
-        <dt className="font-medium text-gray-500">Train Number</dt>
-        <dd className="font-semibold text-gray-900">{trainNumber}</dd>
+const MapPopup = ({
+  trainName,
+  trainNumber,
+  coach,
+  latitude,
+  longitude,
+  status,
+  isEmergency,
+}) => (
+  <div className="min-w-[220px] space-y-2">
+    <h3 className="border-b pb-2 text-base font-semibold text-railway-navy">
+      {trainName}
+    </h3>
+
+    <div className="space-y-1 text-sm">
+      <div className="flex justify-between">
+        <span className="text-gray-500">Train No.</span>
+        <span className="font-semibold">{trainNumber}</span>
       </div>
-      <div className="flex justify-between gap-4">
-        <dt className="font-medium text-gray-500">Coach</dt>
-        <dd className="font-semibold text-gray-900">{coach}</dd>
+
+      <div className="flex justify-between">
+        <span className="text-gray-500">Coach</span>
+        <span className="font-semibold">{coach}</span>
       </div>
-      <div className="flex justify-between gap-4">
-        <dt className="font-medium text-gray-500">Latitude</dt>
-        <dd className="font-semibold text-gray-900">{latitude.toFixed(4)}</dd>
+
+      <div className="flex justify-between">
+        <span className="text-gray-500">Latitude</span>
+        <span>{latitude.toFixed(4)}</span>
       </div>
-      <div className="flex justify-between gap-4">
-        <dt className="font-medium text-gray-500">Longitude</dt>
-        <dd className="font-semibold text-gray-900">{longitude.toFixed(4)}</dd>
+
+      <div className="flex justify-between">
+        <span className="text-gray-500">Longitude</span>
+        <span>{longitude.toFixed(4)}</span>
       </div>
-      <div className="flex justify-between gap-4">
-        <dt className="font-medium text-gray-500">Status</dt>
-        <dd
+
+      <div className="flex justify-between">
+        <span className="text-gray-500">Status</span>
+
+        <span
           className={`font-semibold ${
-            isEmergency ? "text-railway-red" : "text-railway-success"
+            isEmergency
+              ? "text-railway-red"
+              : "text-railway-success"
           }`}
         >
           {status}
-        </dd>
+        </span>
       </div>
-    </dl>
+    </div>
   </div>
 );
 
@@ -104,48 +124,53 @@ const LiveMap = ({ className = "", mapHeight = 560 }) => {
   const [syncTime, setSyncTime] = useState("");
 
   useEffect(() => {
-    const updateSyncTime = () => {
+    const updateTime = () => {
       setSyncTime(
         new Date().toLocaleTimeString("en-IN", {
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           hour12: false,
           timeZone: "Asia/Kolkata",
         }) + " IST"
       );
     };
-    updateSyncTime();
-    const timer = setInterval(updateSyncTime, 60000);
+
+    updateTime();
+
+    const timer = setInterval(updateTime, 1000);
+
     return () => clearInterval(timer);
   }, []);
 
   return (
     <section
-      className={`rounded-lg border border-railway-border bg-white p-4 ${className}`}
+      className={`rounded-lg border border-railway-border bg-white shadow-sm ${className}`}
     >
-      <header className="mb-3 border-b border-railway-border pb-3">
-        <h2 className="text-base font-semibold tracking-tight text-railway-navy">
+      <header className="border-b border-railway-border px-5 py-4">
+        <h2 className="text-lg font-semibold text-railway-navy">
           Live Railway Operations Map
         </h2>
-        <p className="mt-0.5 text-xs font-medium text-railway-text/60">
-          Last synchronized: {syncTime || "—"}
+
+        <p className="mt-1 text-xs text-gray-500">
+          Last synchronized: {syncTime}
         </p>
       </header>
 
       <div
-        className="w-full overflow-hidden rounded-lg border border-railway-border"
+        className="overflow-hidden"
         style={{ height: `${mapHeight}px` }}
       >
         <MapContainer
           center={INDIA_CENTER}
           zoom={INDIA_ZOOM}
+          scrollWheelZoom
           className="h-full w-full"
-          scrollWheelZoom={true}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+        <TileLayer
+          attribution='&copy; MapTiler &copy; OpenStreetMap contributors'
+          url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${import.meta.env.VITE_MAPTILER_KEY}`}
+        />
 
           {MARKER_DATA.map((marker) => (
             <Marker
@@ -161,19 +186,21 @@ const LiveMap = ({ className = "", mapHeight = 560 }) => {
         </MapContainer>
       </div>
 
-      <footer className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-railway-border pt-3 text-xs font-medium text-railway-text/70">
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true">🟢</span>
-          Running Trains
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true">🔴</span>
-          Active Emergencies
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true">🟡</span>
-          Delayed Trains
-        </span>
+      <footer className="flex flex-wrap items-center gap-6 border-t border-railway-border px-5 py-3 text-sm">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-blue-600"></span>
+          <span>Running Trains</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-red-600"></span>
+          <span>Active Emergencies</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-yellow-400"></span>
+          <span>Delayed Trains</span>
+        </div>
       </footer>
     </section>
   );

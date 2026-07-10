@@ -8,25 +8,25 @@ import PD from "../../assets/authorities/PD.jpg";
 const AUTHORITIES = [
   {
     id: "president",
-    name: "Droupadi Murmu",
+    name: "Smt. Droupadi Murmu",
     designation: "President of India",
     image: President,
   },
   {
     id: "pm",
-    name: "Narendra Modi",
+    name: "Shri Narendra Modi",
     designation: "Prime Minister of India",
     image: PM,
   },
   {
     id: "rail-minister",
-    name: "Ashwini Vaishnaw",
+    name: "Shri Ashwini Vaishnaw",
     designation: "Railway Minister",
     image: RailwayMinister,
   },
   {
     id: "nfr-gm",
-    name: "Chetan Kumar Shrivastava",
+    name: "Shri Chetan Kumar Shrivastava",
     designation: "General Manager, North Frontier Railway",
     image: GM,
   },
