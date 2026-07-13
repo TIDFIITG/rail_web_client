@@ -178,8 +178,6 @@ KpiCard.propTypes = {
 const OperationsOverview = ({ className = "", variant = "default" }) => {
   const [kpiData, setKpiData] = useState(DEFAULT_KPI_DATA);
 
-  console.log("Current KPI Data:", kpiData);
-
 
   const isCompact = variant === "compact";
   const isDashboard = variant === "dashboard";
