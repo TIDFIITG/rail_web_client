@@ -159,7 +159,10 @@ const KpiCard = ({
 
 KpiCard.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   icon: PropTypes.elementType.isRequired,
   iconBg: PropTypes.string.isRequired,
   iconColor: PropTypes.string.isRequired,
@@ -173,9 +176,88 @@ KpiCard.propTypes = {
 };
 
 const OperationsOverview = ({ className = "", variant = "default" }) => {
+  const [kpiData, setKpiData] = useState(DEFAULT_KPI_DATA);
+
+  console.log("Current KPI Data:", kpiData);
+
+
   const isCompact = variant === "compact";
   const isDashboard = variant === "dashboard";
 
+  useEffect(() => {
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/coach/dashboard-stats`
+      );
+  
+
+      console.log("Dashboard API Response:", response.data)
+
+
+      const stats = response.data.data;
+
+      setKpiData([
+        {
+          id: "today-chain-pulls",
+          label: "Today's Chain Pulls",
+          value: stats.todayChainPulls,
+          icon: AlertTriangle,
+          iconBg: "bg-red-50",
+          iconColor: "text-railway-red",
+          trend: {
+            direction: "neutral",
+            text: "Updated Live",
+          },
+          lastUpdated: "Live",
+        },
+        {
+          id: "weekly-chain-pulls",
+          label: "Weekly Chain Pulls",
+          value: stats.weeklyChainPulls,
+          icon: CalendarDays,
+          iconBg: "bg-orange-50",
+          iconColor: "text-railway-warning",
+          trend: {
+            direction: "neutral",
+            text: "Last 7 Days",
+          },
+          lastUpdated: "Live",
+        },
+        {
+          id: "active-trains",
+          label: "Active Trains",
+          value: stats.activeTrains,
+          icon: TrainFront,
+          iconBg: "bg-blue-50",
+          iconColor: "text-railway-blue",
+          trend: {
+            direction: "neutral",
+            text: "Currently Running",
+          },
+          lastUpdated: "Live",
+        },
+        {
+          id: "response-time",
+          label: "Average Response Time",
+          value: stats.averageResponseTime,
+          icon: Clock,
+          iconBg: "bg-green-50",
+          iconColor: "text-railway-success",
+          trend: {
+            direction: "neutral",
+            text: "Average Time",
+          },
+          lastUpdated: "Live",
+        },
+      ]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchDashboardStats();
+}, []);
   return (
     <section
       className={`rounded-lg border border-railway-border bg-white ${
@@ -184,8 +266,8 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
     >
       {!isDashboard && !isCompact && (
         <header className="mb-6 border-b border-railway-border pb-4">
-          <h1 className="text-2xl font-semibold tracking-tight text-railway-navy sm:text-3xl">
-            Rail Watch
+          <h1 className="text-2xl font-semibold tracking-tight text-red-600 sm:text-3xl">
+            TESTING OPERATIONS OVERVIEW
           </h1>
           <p className="mt-1 text-sm text-railway-text/70">
             Real-Time Railway Emergency Monitoring Platform
@@ -202,14 +284,14 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
               : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
         }
       >
-        {DEFAULT_KPI_DATA.map((kpi) => (
-    <KpiCard
-        key={kpi.id}
-        {...kpi}
-        compact={isCompact}
-        dashboard={isDashboard}
-    />
-))}
+        {kpiData.map((kpi) => (
+        <KpiCard
+          key={kpi.id}
+          {...kpi}
+          compact={isCompact}
+          dashboard={isDashboard}
+        />
+      ))}
       </div>
     </section>
   );
