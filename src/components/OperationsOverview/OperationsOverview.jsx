@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import {
   AlertTriangle,
-  Siren,
+  CalendarDays,
   TrainFront,
   Clock,
   TrendingUp,
@@ -9,49 +12,48 @@ import {
   Minus,
 } from "lucide-react";
 
-const KPI_DATA = [
+const DEFAULT_KPI_DATA = [
   {
-    id: "incidents",
-    label: "Today's Incidents",
-    value: "18",
+    id: "today-chain-pulls",
+    label: "Today's Chain Pulls",
+    value: "--",
     icon: AlertTriangle,
-    iconBg: "bg-orange-50",
-    iconColor: "text-railway-warning",
-    trend: { direction: "up", text: "+3 from yesterday" },
-    lastUpdated: "17:42 IST",
+    iconBg: "bg-red-50",
+    iconColor: "text-railway-red",
+    trend: { direction: "neutral", text: "Loading..." },
+    lastUpdated: "Live",
   },
   {
-    id: "trains",
-    label: "Running Trains",
-    value: "237",
+    id: "weekly-chain-pulls",
+    label: "Weekly Chain Pulls",
+    value: "--",
+    icon: CalendarDays,
+    iconBg: "bg-orange-50",
+    iconColor: "text-railway-warning",
+    trend: { direction: "neutral", text: "Loading..." },
+    lastUpdated: "Live",
+  },
+  {
+    id: "active-trains",
+    label: "Active Trains",
+    value: "--",
     icon: TrainFront,
     iconBg: "bg-blue-50",
     iconColor: "text-railway-blue",
-    trend: { direction: "up", text: "+12 on schedule" },
-    lastUpdated: "17:42 IST",
-  },
-  {
-    id: "emergencies",
-    label: "Active Emergencies",
-    value: "4",
-    icon: Siren,
-    iconBg: "bg-red-50",
-    iconColor: "text-railway-red",
-    trend: { direction: "down", text: "-1 in last hour" },
-    lastUpdated: "17:42 IST",
+    trend: { direction: "neutral", text: "Loading..." },
+    lastUpdated: "Live",
   },
   {
     id: "response-time",
-    label: "Average Response Time",
-    value: "3.8 min",
+    label: "Emergency Response",
+    value: "--",
     icon: Clock,
     iconBg: "bg-green-50",
     iconColor: "text-railway-success",
-    trend: { direction: "neutral", text: "Within SLA target" },
-    lastUpdated: "17:42 IST",
+    trend: { direction: "neutral", text: "Loading..." },
+    lastUpdated: "Live",
   },
 ];
-
 const trendStyles = {
   up: {
     container: "text-railway-success bg-green-50",
