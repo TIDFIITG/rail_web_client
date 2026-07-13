@@ -2,43 +2,13 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import axios from "axios";
 import "leaflet/dist/leaflet.css";
 
 const INDIA_CENTER = [22.9734, 78.6569];
 const INDIA_ZOOM = 5;
 
-const MARKER_DATA = [
-  {
-    id: "12512",
-    trainName: "Guwahati Express",
-    trainNumber: "12512",
-    coach: "S5",
-    latitude: 21.1458,
-    longitude: 79.0882,
-    status: "Running",
-    isEmergency: false,
-  },
-  {
-    id: "12605",
-    trainName: "KSR Bengaluru Express",
-    trainNumber: "12605",
-    coach: "A2",
-    latitude: 13.0827,
-    longitude: 80.2707,
-    status: "Running",
-    isEmergency: false,
-  },
-  {
-    id: "22512",
-    trainName: "Karmabhoomi Express",
-    trainNumber: "22512",
-    coach: "S3",
-    latitude: 23.2599,
-    longitude: 77.4126,
-    status: "Emergency",
-    isEmergency: true,
-  },
-];
+
 
 const createMarkerIcon = (isEmergency) =>
   L.divIcon({
@@ -85,12 +55,12 @@ const MapPopup = ({
 
       <div className="flex justify-between">
         <span className="text-gray-500">Latitude</span>
-        <span>{latitude.toFixed(4)}</span>
+        <span>{Number(latitude).toFixed(4)}</span>
       </div>
 
       <div className="flex justify-between">
         <span className="text-gray-500">Longitude</span>
-        <span>{longitude.toFixed(4)}</span>
+        <span>{Number(longitude).toFixed(4)}</span>
       </div>
 
       <div className="flex justify-between">
@@ -114,35 +84,52 @@ MapPopup.propTypes = {
   trainName: PropTypes.string.isRequired,
   trainNumber: PropTypes.string.isRequired,
   coach: PropTypes.string.isRequired,
-  latitude: PropTypes.number.isRequired,
-  longitude: PropTypes.number.isRequired,
+  latitude: PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.number,
+  ]).isRequired,
+
+  longitude: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   status: PropTypes.string.isRequired,
   isEmergency: PropTypes.bool.isRequired,
 };
 
 const LiveMap = ({ className = "", mapHeight = 560 }) => {
   const [syncTime, setSyncTime] = useState("");
+  const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
-    const updateTime = () => {
-      setSyncTime(
-        new Date().toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: "Asia/Kolkata",
-        }) + " IST"
-      );
+    const fetchMarkers = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/coach/active-chain-pulls`
+        );
+
+        setMarkers(response.data.alerts);
+
+        setSyncTime(
+          new Date().toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+            timeZone: "Asia/Kolkata",
+          }) + " IST"
+        );
+      } catch (error) {
+        console.error("Failed to fetch map markers:", error);
+      }
     };
 
-    updateTime();
+    fetchMarkers();
 
-    const timer = setInterval(updateTime, 1000);
+    const interval = setInterval(fetchMarkers, 20000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, []);
-
   return (
     <section
       className={`rounded-lg border border-railway-border bg-white shadow-sm ${className}`}
@@ -172,17 +159,28 @@ const LiveMap = ({ className = "", mapHeight = 560 }) => {
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${import.meta.env.VITE_MAPTILER_KEY}`}
         />
 
-          {MARKER_DATA.map((marker) => (
-            <Marker
-              key={marker.id}
-              position={[marker.latitude, marker.longitude]}
-              icon={createMarkerIcon(marker.isEmergency)}
-            >
-              <Popup>
-                <MapPopup {...marker} />
-              </Popup>
-            </Marker>
-          ))}
+         {markers.map((marker) => (
+          <Marker
+            key={marker._id}
+            position={[
+              Number(marker.latitude),
+              Number(marker.longitude),
+            ]}
+            icon={createMarkerIcon(true)}
+          >
+            <Popup>
+              <MapPopup
+                trainName={marker.train_Name}
+                trainNumber={marker.train_Number}
+                coach={marker.coach_name}
+                latitude={marker.latitude}
+                longitude={marker.longitude}
+                status="Chain Pulled"
+                isEmergency={true}
+              />
+            </Popup>
+          </Marker>
+        ))}
         </MapContainer>
       </div>
 
