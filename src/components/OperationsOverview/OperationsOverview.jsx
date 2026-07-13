@@ -202,9 +202,14 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
               : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
         }
       >
-        {KPI_DATA.map((kpi) => (
-          <KpiCard key={kpi.id} {...kpi} compact={isCompact} dashboard={isDashboard} />
-        ))}
+        {DEFAULT_KPI_DATA.map((kpi) => (
+    <KpiCard
+        key={kpi.id}
+        {...kpi}
+        compact={isCompact}
+        dashboard={isDashboard}
+    />
+))}
       </div>
     </section>
   );
