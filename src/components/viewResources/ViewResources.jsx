@@ -100,7 +100,41 @@ const ViewResources = () => {
   }
 };
 
+   const handleTransferCoach = async () => {
+  try {
 
+    if (!selectedTrain) {
+      alert("Please select a destination train.");
+      return;
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/division/transfer-coach`,
+      {
+        coach_uid: selectedCoach.uid,
+        fromDivisionId: data._id,
+        toDivisionId: selectedTrain,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    alert(response.data.message);
+
+    setShowTransferModal(false);
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      "Transfer failed."
+    );
+  }
+};
 
   if (!isAuthenticated) {
     return null;
@@ -317,6 +351,7 @@ const ViewResources = () => {
                   </select>
 
                   <button
+                    onClick={handleTransferCoach}
                     className="mb-4 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700"
                   >
                     Transfer Coach
@@ -351,8 +386,10 @@ const ViewResources = () => {
             >
               ← Back to Previous Page
             </button>
-          </div>
         </div>
+        
+          </div>
+          
 
         <style jsx>{`
           @keyframes fade-in-down {
