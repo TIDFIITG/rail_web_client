@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ArrowRightLeft } from "lucide-react";
 import Loader from "../Loder"; // Assuming Loader is a well-styled component
 
 const ViewResources = () => {
@@ -12,6 +13,10 @@ const ViewResources = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [selectedCoach, setSelectedCoach] = useState(null);
+  const [allTrains, setAllTrains] = useState([]);
+  const [selectedTrain, setSelectedTrain] = useState("");
 
   // Check if the user is authenticated
   useEffect(() => {
@@ -74,6 +79,28 @@ const ViewResources = () => {
     const coachUid = coach.uid;
     navigate(`/coach-details/${data.train_Number}/${coachUid}`);
   };
+
+
+  const fetchAllTrains = async () => {
+  try {
+    const response = await axios.get(
+      "https://rail-web-server-r7z1.onrender.com/api/division/get-all-division",
+      {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    setAllTrains(response.data.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 
   if (!isAuthenticated) {
     return null;
@@ -202,6 +229,21 @@ const ViewResources = () => {
                     className="group relative animate-fade-in-up"
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
+
+                    <button
+                      onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedCoach(coach);
+                            fetchAllTrains();
+                            setShowTransferModal(true);
+                      }}
+                      className="absolute top-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur hover:bg-white/40 transition"
+                      title="Transfer Coach"
+                    >
+                      <ArrowRightLeft size={16} />
+                    </button>
+
+
                     <button
                       onClick={() => handleCoachClick(coach)}
                       className="w-full p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl 
@@ -240,6 +282,63 @@ const ViewResources = () => {
                 <p className="text-sm text-gray-500">Please check if coaches are configured in the division settings.</p>
               </div>
             )}
+
+            {showTransferModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+
+                <h2 className="mb-6 text-2xl font-bold text-center">
+                  🔄 Transfer Coach
+                </h2>
+
+                <p className="mb-6 text-center text-gray-600">
+                  Coach: <strong>{selectedCoach?.coach_name}</strong>
+                </p>
+
+                <>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">
+                    Select Destination Train
+                  </label>
+
+                  <select
+                    value={selectedTrain}
+                    onChange={(e) => setSelectedTrain(e.target.value)}
+                    className="mb-5 w-full rounded-xl border border-gray-300 p-3 focus:border-indigo-500 focus:outline-none"
+                  >
+                    <option value="">Choose a train</option>
+
+                    {allTrains
+                      .filter((train) => train._id !== data._id)
+                      .map((train) => (
+                        <option key={train._id} value={train._id}>
+                          {train.train_Name} ({train.train_Number})
+                        </option>
+                      ))}
+                  </select>
+
+                  <button
+                    className="mb-4 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700"
+                  >
+                    Transfer Coach
+                  </button>
+                </>
+
+                <button
+                  className="mb-6 w-full rounded-xl bg-green-600 py-3 font-semibold text-white hover:bg-green-700"
+                >
+                  🚆 Create New Train
+                </button>
+
+                <button
+                  onClick={() => setShowTransferModal(false)}
+                  className="w-full rounded-xl border py-3 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+
+              </div>
+            </div>
+          )}
           </div>
 
           {/* Back Button */}
