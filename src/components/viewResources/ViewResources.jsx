@@ -263,18 +263,20 @@ const ViewResources = () => {
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
 
-                    <button
-                      onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedCoach(coach);
-                            fetchAllTrains();
-                            setShowTransferModal(true);
-                      }}
-                      className="absolute top-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur hover:bg-white/40 transition"
-                      title="Transfer Coach"
-                    >
-                      <ArrowRightLeft size={16} />
-                    </button>
+                    {sessionStorage.getItem("role") === "admin" && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCoach(coach);
+                          fetchAllTrains();
+                          setShowTransferModal(true);
+                        }}
+                        className="absolute top-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur hover:bg-white/40 transition"
+                        title="Transfer Coach"
+                      >
+                        <ArrowRightLeft size={16} />
+                      </button>
+                    )}
 
 
                     <button
