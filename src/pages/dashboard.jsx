@@ -63,7 +63,6 @@ const Dashboard = () => {
           setData(formattedData);
           setFilteredData(formattedData);
           calculateStats(formattedData);
-          console.log("Fetched All Data:", formattedData);
         } catch (error) {
           console.error("Error fetching all resources:", error);
         } finally {

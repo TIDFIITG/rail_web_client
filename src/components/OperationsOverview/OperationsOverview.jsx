@@ -190,7 +190,6 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
       );
   
 
-      console.log("Dashboard API Response:", response.data)
 
 
       const stats = response.data.data;

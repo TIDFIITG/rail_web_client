@@ -46,7 +46,7 @@ const ViewResources = () => {
             { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
           );
 
-          console.log("Coaches Response:", coachesResponse.data);
+     
 
           // Handle the response structure properly
           if (coachesResponse.data.coaches?.length > 0) {
@@ -92,7 +92,6 @@ const ViewResources = () => {
       }
     );
 
-    console.log(response.data);
 
     setAllTrains(response.data.data);
   } catch (error) {
@@ -358,11 +357,20 @@ const ViewResources = () => {
                   </button>
                 </>
 
-                <button
-                  className="mb-6 w-full rounded-xl bg-green-600 py-3 font-semibold text-white hover:bg-green-700"
-                >
-                  🚆 Create New Train
-                </button>
+              <button
+                onClick={() => {
+                  setShowTransferModal(false);
+                  navigate("/add-train", {
+                      state: {
+                          coach: selectedCoach,
+                          fromDivision: data
+                      }
+                  });
+                }}
+                className="mb-6 w-full rounded-xl bg-green-600 py-3 font-semibold text-white hover:bg-green-700"
+              >
+                🚆 Create New Train
+              </button>
 
                 <button
                   onClick={() => setShowTransferModal(false)}

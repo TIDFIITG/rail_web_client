@@ -18,6 +18,9 @@ const AddTrainBody = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const transferredCoach = location.state?.coach || null;
+  const fromDivision = location.state?.fromDivision || null;
+  const isTransfer = !!transferredCoach;
 
   const isEdit = useMemo(() => searchParams.get("edit") === "1" || searchParams.get("edit") === "true", [searchParams]);
   const editId = useMemo(() => searchParams.get("id") || location?.state?.train?._id || null, [searchParams, location?.state]);
@@ -43,6 +46,19 @@ const AddTrainBody = () => {
     }
     return [{ uid: "", coach_name: "" }];
   });
+
+
+  useEffect(() => {
+    if (transferredCoach) {
+        setCoaches([
+            {
+                uid: transferredCoach.uid,
+                coach_name: transferredCoach.coach_name
+            }
+        ]);
+    }
+}, [transferredCoach]);
+
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -143,14 +159,23 @@ const AddTrainBody = () => {
         const res = await axios.put(`${API_BASE}/api/division/modify-division/${editId}`, payload, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
         });
-        console.log("✏️ Modified:", res.data);
         setMessage("✅ Train updated successfully!");
       } else {
         // ADD
         const res = await axios.post(`${API_BASE}/api/division/add-division`, payload, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
         });
-        console.log("🚂 Added:", res.data);
+  
+        if (transferredCoach && fromDivision) {
+        await axios.delete(
+          `${API_BASE}/api/division/division/${fromDivision._id}/remove-coach/${transferredCoach.uid}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
         setMessage("✅ Train added successfully!");
       }
 
@@ -197,16 +222,53 @@ const AddTrainBody = () => {
               <IoTrainOutline className="text-white text-2xl" />
             </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              {isEdit ? "Edit Train" : "Add New Train"}
+              {isEdit
+                ? "Edit Train"
+                : isTransfer
+                ? "Transfer Coach to New Train"
+                : "Add New Train"}
             </h1>
             <p className="text-gray-600">
-              {isEdit ? "Update the details of this train" : "Fill in the details to add a new train to the system"}
+              {isEdit
+                ? "Update the details of this train"
+                : isTransfer
+                ? "Create a new train. The selected coach will be transferred automatically."
+                : "Fill in the details to add a new train to the system"}
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isTransfer && (
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+              <h3 className="mb-4 flex items-center text-lg font-bold text-blue-800">
+                🔄 Coach Being Transferred
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-500">Coach Name</p>
+                  <p className="font-semibold text-black">{transferredCoach.coach_name}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Coach UID</p>
+                  <p className="font-semibold text-black ">{transferredCoach.uid}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">From Train</p>
+                  <p className="font-semibold text-black">{fromDivision.train_Name}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Train Number</p>
+                  <p className="font-semibold text-black">{fromDivision.train_Number}</p>
+                </div>
+              </div>
+            </div>
+          )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Division */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
@@ -309,14 +371,16 @@ const AddTrainBody = () => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-semibold text-gray-700">Coaches (UID & Name)</label>
-                <button
-                  type="button"
-                  onClick={addCoachRow}
-                  className="inline-flex items-center space-x-2 px-3 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
-                >
-                  <IoAdd />
-                  <span>Add Coach</span>
-                </button>
+                {!transferredCoach && (
+                  <button
+                    type="button"
+                    onClick={addCoachRow}
+                    className="inline-flex items-center space-x-2 px-3 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                  >
+                    <IoAdd />
+                    <span>Add Coach</span>
+                  </button>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -329,6 +393,8 @@ const AddTrainBody = () => {
                         placeholder="UID (numbers only)"
                         value={c.uid}
                         onChange={(e) => updateCoachField(idx, "uid", e.target.value)}
+                        readOnly={!!transferredCoach}
+                        disabled={!!transferredCoach}
                         className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 placeholder-gray-400 hover:border-gray-300"
                       />
                     </div>
@@ -338,10 +404,13 @@ const AddTrainBody = () => {
                         placeholder="Coach name"
                         value={c.coach_name}
                         onChange={(e) => updateCoachField(idx, "coach_name", e.target.value)}
+                        readOnly={!!transferredCoach}
+                        disabled={!!transferredCoach}
                         className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 placeholder-gray-400 hover:border-gray-300"
                       />
                     </div>
                     <div className="md:col-span-5 flex justify-end">
+                      {!transferredCoach && (
                       <button
                         type="button"
                         onClick={() => removeCoachRow(idx)}
@@ -352,6 +421,7 @@ const AddTrainBody = () => {
                         <IoTrash />
                         <span>Remove</span>
                       </button>
+                    )}
                     </div>
                   </div>
                 ))}

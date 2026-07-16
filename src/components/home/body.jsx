@@ -21,7 +21,6 @@ function Body() {
       const data = await response.json();
       if (response.ok) {
         if (data.alerts) {
-          console.log("ALERT COUNT:", data.alerts.length);
           setChainAlerts(data.alerts);
           setLastUpdated(new Date());
         }
