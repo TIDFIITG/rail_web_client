@@ -10,22 +10,21 @@ const INDIA_ZOOM = 5;
 
 
 
-const createMarkerIcon = (isEmergency) =>
+const createMarkerIcon = () =>
   L.divIcon({
     className: "",
     html: `
       <div style="
-        width:16px;
-        height:16px;
+        width:8px;
+        height:8px;
         border-radius:50%;
-        background:${isEmergency ? "#D32F2F" : "#1565C0"};
-        border:3px solid white;
-        box-shadow:0 2px 8px rgba(0,0,0,.35);
+        background:#D32F2F;
+        border:1px solid white;
       "></div>
     `,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-    popupAnchor: [0, -8],
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+    popupAnchor: [0, -4],
   });
 
 const MapPopup = ({
@@ -105,7 +104,7 @@ const LiveMap = ({ className = "", mapHeight = 560 }) => {
     const fetchMarkers = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/coach/active-chain-pulls`
+          `${import.meta.env.VITE_API_URL}/api/coach/recent-chain-status`
         );
 
         setMarkers(response.data.alerts);
@@ -166,7 +165,7 @@ const LiveMap = ({ className = "", mapHeight = 560 }) => {
               Number(marker.latitude),
               Number(marker.longitude),
             ]}
-            icon={createMarkerIcon(true)}
+            icon={createMarkerIcon()}
           >
             <Popup>
               <MapPopup
