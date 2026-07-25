@@ -74,12 +74,11 @@ function InstallPWAInline() {
 
 function AppLayout() {
   const location = useLocation();
-  const isHome = location.pathname === '/';
 
   return (
     <div className="flex min-h-screen flex-col">
-      {isHome && <HomePageHeader />}
-      {isHome && <OrganizationHeader />}
+      <HomePageHeader />
+      <OrganizationHeader />
       <Navbar />
 
       <div className="flex-grow">
