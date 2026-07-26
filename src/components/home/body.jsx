@@ -68,27 +68,54 @@ function Body() {
     navigate(`/coach-details/${alert.train_Number}/${alert.coach_uid}`);
   };
 
+  const acpAlerts = chainAlerts.filter(
+    (alert) => alert.event_type === "ACP"
+  );
+
+  const fsdsAlerts = chainAlerts.filter(
+    (alert) => alert.event_type === "FSDS"
+  )
   return (
     <>
       <div className="bg-railway-bg">
         <div className="mx-auto max-w-7xl px-4 py-4 lg:px-6">
           <div className="grid gap-4">
-            {/* Chain Pull Status + Authorities */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[50fr_50fr]">
+           {/* Row 1 */}
+            {/* Row 1 */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <ChainPullStatusTable
-                alerts={chainAlerts}
+                title="Live ACP Alerts"
+                headerColor="bg-red-700"
+                emptyMessage="No Active ACP Alerts"
+                alerts={acpAlerts}
                 loading={loading}
                 lastUpdated={lastUpdated}
                 onViewDetails={handleOpenIncident}
                 onViewMore={() => setShowAllIncidentsModal(true)}
               />
-              <ImportantAuthoritiesPanel />
+
+              <ChainPullStatusTable
+                title="Live FSDS Alerts"
+                headerColor="bg-blue-700"
+                emptyMessage="No Active FSDS Alerts"
+                alerts={fsdsAlerts}
+                loading={loading}
+                lastUpdated={lastUpdated}
+                onViewDetails={handleOpenIncident}
+                onViewMore={() => setShowAllIncidentsModal(true)}
+              />
+            </div>
+            {/* Row 2 */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[45fr_55fr]">
+
+                <OperationsOverview variant="dashboard" />
+
+                <ImportantAuthoritiesPanel />
+
             </div>
 
-            {/* KPI Overview */}
-            <OperationsOverview variant="dashboard" />
+            {/* Row 3 */}
 
-            {/* Live Map — largest visual element */}
             <LiveMap mapHeight={560} />
           </div>
         </div>

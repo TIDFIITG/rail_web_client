@@ -275,7 +275,7 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
       <div
         className={
           isDashboard
-            ? "grid grid-cols-2 gap-3 lg:grid-cols-4"
+            ? "grid grid-cols-2 gap-3 lg:grid-cols-2"
             : isCompact
               ? "grid grid-cols-2 gap-3"
               : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"

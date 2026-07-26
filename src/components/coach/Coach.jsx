@@ -460,7 +460,7 @@ const CoachDetails = () => {
                   </tr>
                 )}
               </tbody>
-            </table>
+            </table>c
           </div>
         </div>
       </div>

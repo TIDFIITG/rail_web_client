@@ -31,8 +31,8 @@ const formatLastUpdated = (date) => {
 };
 
 const ChainPullStatusTable = ({
-  title = "Live Chain Pull Status",
-  emptyMessage = "All Systems Normal — No Active Chain Pulls",
+  title="Live FSDS Alerts",
+  emptyMessage="No Active FSDS Alerts",
   headerColor="bg-red-700",
   alerts,
   loading,
@@ -45,7 +45,7 @@ const ChainPullStatusTable = ({
 
   return (
     <section className="flex min-h-[190px] flex-col overflow-hidden rounded-lg border border-railway-border bg-white shadow-sm">
-      <div className="bg-railway-navy px-3 py-2">
+      <div className={`${headerColor} px-3 py-2`}>
         <h2 className="text-xs font-semibold text-white">{title}</h2>
       </div>
 
