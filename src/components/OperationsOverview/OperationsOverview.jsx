@@ -7,6 +7,7 @@ import {
   CalendarDays,
   TrainFront,
   Clock,
+  Flame,
   TrendingUp,
   TrendingDown,
   Minus,
@@ -43,6 +44,32 @@ const DEFAULT_KPI_DATA = [
     trend: { direction: "neutral", text: "Loading..." },
     lastUpdated: "Live",
   },
+  {
+    id: "today-fsds",
+    label: "Today's FSDS Alarms",
+    value: "--",
+    icon: Flame,
+    iconBg: "bg-cyan-50",
+    iconColor: "text-cyan-600",
+    trend: {
+        direction: "neutral",
+        text: "Updated Live"
+    },
+    lastUpdated: "Live"
+},
+{
+    id: "weekly-fsds",
+    label: "Weekly FSDS Alarms",
+    value: "--",
+    icon: CalendarDays,
+    iconBg: "bg-sky-50",
+    iconColor: "text-sky-600",
+    trend: {
+        direction: "neutral",
+        text: "Last 7 Days"
+    },
+    lastUpdated: "Live"
+},
   {
     id: "response-time",
     label: "Emergency Response",
@@ -84,26 +111,28 @@ const KpiCard = ({
 
   if (dashboard) {
     return (
-      <article className="rounded-lg border border-railway-border bg-white p-3">
+      <article className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <p className="text-2xl font-bold tracking-tight text-railway-navy lg:text-3xl">
+            <p className="text-2xl font-bold tracking-tight text-railway-navy">
               {value}
             </p>
-            <p className="mt-1 text-xs font-semibold text-railway-text">{label}</p>
-            <p className="mt-0.5 text-[10px] text-railway-text/50">
+            <p className="mt-2 text-sm font-semibold text-slate-600">
+              {label}
+            </p>
+            <p className="mt-1 text-[11px] text-slate-400">
               Last Updated: {lastUpdated}
             </p>
           </div>
           <div
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconBg}`}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${iconBg}`}
           >
             <Icon className={`h-5 w-5 ${iconColor}`} strokeWidth={2.25} aria-hidden="true" />
           </div>
         </div>
-        <div className="mt-2">
+        <div className="mt-3">
           <span
-            className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${container}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${container}`}
           >
             <TrendIcon className="h-3 w-3" strokeWidth={2.25} aria-hidden="true" />
             {trend.text}
@@ -235,6 +264,32 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
           lastUpdated: "Live",
         },
         {
+          id: "today-fsds",
+          label: "Today's FSDS Alarms",
+          value: stats.todayFsds,
+          icon: Flame,
+          iconBg: "bg-cyan-50",
+          iconColor: "text-cyan-600",
+          trend: {
+            direction: "neutral",
+            text: "Updated Live",
+          },
+          lastUpdated: "Live",
+        },
+        {
+          id: "weekly-fsds",
+          label: "Weekly FSDS Alarms",
+          value: stats.weeklyFsds,
+          icon: CalendarDays,
+          iconBg: "bg-sky-50",
+          iconColor: "text-sky-600",
+          trend: {
+            direction: "neutral",
+            text: "Last 7 Days",
+          },
+          lastUpdated: "Live",
+        },
+        {
           id: "response-time",
           label: "Average Response Time",
           value: stats.averageResponseTime,
@@ -261,21 +316,18 @@ const OperationsOverview = ({ className = "", variant = "default" }) => {
         isDashboard ? "p-3" : isCompact ? "p-4" : "p-6 sm:p-8"
       } ${className}`}
     >
-      {!isDashboard && !isCompact && (
-        <header className="mb-6 border-b border-railway-border pb-4">
-          <h1 className="text-2xl font-semibold tracking-tight text-red-600 sm:text-3xl">
-            TESTING OPERATIONS OVERVIEW
-          </h1>
-          <p className="mt-1 text-sm text-railway-text/70">
-            Real-Time Railway Emergency Monitoring Platform
-          </p>
-        </header>
-      )}
+      {isDashboard && (
+      <header className="mb-4 border-b border-slate-200 pb-3">
+        <h2 className="text-lg font-bold uppercase tracking-wide text-railway-navy">
+          Overview
+        </h2>
+      </header>
+    )}
 
       <div
         className={
           isDashboard
-            ? "grid grid-cols-2 gap-3 lg:grid-cols-2"
+            ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
             : isCompact
               ? "grid grid-cols-2 gap-3"
               : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
