@@ -336,131 +336,117 @@ const CoachDetails = () => {
         </div>
 
         {/* Data Table Section */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold text-white mb-4">ACP Alerts</h2>
-          <p className="text-purple-200 mb-6">Showing {acpData.length} ACP records (latest first)</p>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-purple-700/50">
-                  <th className="p-4 text-white font-semibold">Train Number</th>
-                  <th className="p-4 text-white font-semibold">Train Name</th>
-                  <th className="p-4 text-white font-semibold">Coach UID</th>
-                  <th className="p-4 text-white font-semibold">Chain Status</th>
-                  <th className="p-4 text-white font-semibold">Latitude</th>
-                  <th className="p-4 text-white font-semibold">Longitude</th>
-                  <th className="p-4 text-white font-semibold">Memory</th>
-                  <th className="p-4 text-white font-semibold">Date</th>
-                  <th className="p-4 text-white font-semibold">Time</th>
-                  <th className="p-4 text-white font-semibold">Map</th>
-                </tr>
-              </thead>
-              <tbody>
-                {acpData.length > 0 ? (
-                  acpData.map((data, index) => (
-                    <tr key={index} className="border-b border-purple-500/30 hover:bg-purple-600/20 transition-colors">
-                      <td className="p-4 text-purple-100">{data.train_Number || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.train_Name || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.coach_uid || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.chain_status || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.latitude || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.longitude || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.memory || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.date || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.time || "N/A"}</td>
-                      <td className="p-4">
-                        <button
-                          onClick={() =>
-                            window.open(
-                              `https://www.google.com/maps?q=${data.latitude},${data.longitude}`,
-                              "_blank"
-                            )
-                          }
-                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-300"
-                          title="Open Location"
-                        >
-                          <MapPinned size={18} />
-                        </button>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+            <h2 className="text-2xl font-bold text-white mb-4">🔴 ACP Alerts</h2>
+            <p className="text-purple-200 mb-6">Showing {acpData.length} ACP records (latest first)</p>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-red-600/70">
+                    <th className="p-4 text-white font-semibold">Latitude</th>
+                    <th className="p-4 text-white font-semibold">Longitude</th>
+                    <th className="p-4 text-white font-semibold">Memory</th>
+                    <th className="p-4 text-white font-semibold">Date</th>
+                    <th className="p-4 text-white font-semibold">Time</th>
+                    <th className="p-4 text-white font-semibold">Map</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {acpData.length > 0 ? (
+                    acpData.map((data, index) => (
+                      <tr key={index} className="border-b border-purple-500/30 hover:bg-purple-600/20 transition-colors">
+                        <td className="px-3 py-2 text-purple-100">{data.latitude || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.longitude || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.memory || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.date || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.time || "N/A"}</td>
+                        <td className="px-3 py-2">
+                          <button
+                            onClick={() =>
+                              window.open(
+                                `https://www.google.com/maps?q=${data.latitude},${data.longitude}`,
+                                "_blank"
+                              )
+                            }
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-300"
+                            title="Open Location"
+                          >
+                            <MapPinned size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="10" className="p-8 text-center text-purple-200">
+                        <div className="flex flex-col items-center">
+                          <p className="text-xl font-semibold mb-2">No data available</p>
+                          <p className="text-sm">No sensor data found for this coach.</p>
+                        </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="10" className="p-8 text-center text-purple-200">
-                      <div className="flex flex-col items-center">
-                        <p className="text-xl font-semibold mb-2">No data available</p>
-                        <p className="text-sm">No sensor data found for this coach.</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
         {/* FSDS Data Table Section */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold text-white mb-4">FSDS Data</h2>
-          <p className="text-purple-200 mb-6">Showing {fsdsData.length} FSDS records (latest first)</p>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-purple-700/50">
-                  <th className="p-4 text-white font-semibold">Train Number</th>
-                  <th className="p-4 text-white font-semibold">Train Name</th>
-                  <th className="p-4 text-white font-semibold">Coach UID</th>
-                  <th className="p-4 text-white font-semibold">Chain Status</th>
-                  <th className="p-4 text-white font-semibold">Latitude</th>
-                  <th className="p-4 text-white font-semibold">Longitude</th>
-                  <th className="p-4 text-white font-semibold">Memory</th>
-                  <th className="p-4 text-white font-semibold">Date</th>
-                  <th className="p-4 text-white font-semibold">Time</th>
-                  <th className="p-4 text-white font-semibold">Map</th>
-                </tr>
-              </thead>
-              <tbody>
-                {fsdsData.length > 0 ? (
-                  fsdsData.map((data, index) => (
-                    <tr key={index} className="border-b border-purple-500/30 hover:bg-purple-600/20 transition-colors">
-                      <td className="p-4 text-purple-100">{data.train_Number || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.train_Name || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.coach_uid || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.chain_status || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.latitude || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.longitude || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.memory || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.date || "N/A"}</td>
-                      <td className="p-4 text-purple-100">{data.time || "N/A"}</td>
-                      <td className="p-4">
-                        <button
-                          onClick={() =>
-                            window.open(
-                              `https://www.google.com/maps?q=${data.latitude},${data.longitude}`,
-                              "_blank"
-                            )
-                          }
-                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-300"
-                          title="Open Location"
-                        >
-                          <MapPinned size={18} />
-                        </button>
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+            <h2 className="text-2xl font-bold text-white mb-4">🔥 FSDS Alerts</h2>
+            <p className="text-purple-200 mb-6">Showing {fsdsData.length} FSDS records (latest first)</p>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-orange-600/70">
+                    <th className="p-4 text-white font-semibold">Latitude</th>
+                    <th className="p-4 text-white font-semibold">Longitude</th>
+                    <th className="p-4 text-white font-semibold">Memory</th>
+                    <th className="p-4 text-white font-semibold">Date</th>
+                    <th className="p-4 text-white font-semibold">Time</th>
+                    <th className="p-4 text-white font-semibold">Map</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fsdsData.length > 0 ? (
+                    fsdsData.map((data, index) => (
+                      <tr key={index} className="border-b border-purple-500/30 hover:bg-purple-600/20 transition-colors">
+                        <td className="px-3 py-2 text-purple-100">{data.latitude || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.longitude || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.memory || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.date || "N/A"}</td>
+                        <td className="px-3 py-2 text-purple-100">{data.time || "N/A"}</td>
+                        <td className="px-3 py-2">
+                          <button
+                            onClick={() =>
+                              window.open(
+                                `https://www.google.com/maps?q=${data.latitude},${data.longitude}`,
+                                "_blank"
+                              )
+                            }
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-300"
+                            title="Open Location"
+                          >
+                            <MapPinned size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="p-8 text-center text-purple-200">
+                        <div className="flex flex-col items-center">
+                          <p className="text-xl font-semibold mb-2">No data available</p>
+                          <p className="text-sm">No sensor data found for this coach.</p>
+                        </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="10" className="p-8 text-center text-purple-200">
-                      <div className="flex flex-col items-center">
-                        <p className="text-xl font-semibold mb-2">No data available</p>
-                        <p className="text-sm">No sensor data found for this coach.</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>c
+                  )}
+                </tbody>
+              </table>c
+            </div>
           </div>
         </div>
       </div>
