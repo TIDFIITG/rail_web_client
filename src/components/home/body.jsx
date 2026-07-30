@@ -81,16 +81,7 @@ function Body() {
         <div className="mx-auto max-w-7xl px-4 py-4 lg:px-6">
           <div className="grid gap-4">
             {/* Row 1 */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[45fr_55fr]">
-
-                <OperationsOverview variant="dashboard" />
-
-                <ImportantAuthoritiesPanel />
-
-            </div>
-            
-            {/* Row 2 */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[45fr_55fr]">              
               <ChainPullStatusTable
                 title="Live ACP Alerts"
                 headerColor="bg-red-700"
@@ -101,6 +92,14 @@ function Body() {
                 onViewDetails={handleOpenIncident}
                 onViewMore={() => setShowAllIncidentsModal(true)}
               />
+
+                <ImportantAuthoritiesPanel />
+
+            </div>
+            
+            {/* Row 2 */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <OperationsOverview variant="dashboard" />
 
               <ChainPullStatusTable
                 title="Live FSDS Alerts"
