@@ -63,7 +63,7 @@ const ImportantAuthoritiesPanel = ({ className = "" }) => {
               <img
                 src={person.image}
                 alt={person.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover object-top"
               />
             </div>
 
