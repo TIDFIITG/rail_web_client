@@ -17,7 +17,11 @@ const CoachDetails = () => {
   console.log("Coach UID from URL:", coach);
 
   const [coachData, setCoachData] = useState([]);
+  // Live (current) assignment — where this coach_uid actually is right now.
   const [coachInfo, setCoachInfo] = useState(null);
+  // Fallback built from the most recent historical record, used only if the
+  // coach isn't currently assigned to any train (so the header isn't blank).
+  const [fallbackInfo, setFallbackInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,7 +56,7 @@ const CoachDetails = () => {
         setCoachData(sortedData);
 
         if (sortedData[0]) {
-          setCoachInfo({
+          setFallbackInfo({
             coach_uid: sortedData[0].coach_uid,
             coach_name: sortedData[0].coach_name || `Coach ${sortedData[0].coach_uid}`,
             train_Number: sortedData[0].train_Number,
@@ -74,11 +78,41 @@ const CoachDetails = () => {
     }
   };
 
+  // Where is this coach_uid CURRENTLY assigned? This can differ from the
+  // train/coach name shown on historical readings if the coach has since
+  // been reassigned to a different train.
+  const fetchCurrentAssignment = async () => {
+    if (!coach) return;
+
+    try {
+      const response = await axios.get(
+        `https://rail-web-server-r7z1.onrender.com/api/coach/current-assignment?coach_uid=${coach}`
+      );
+      setCoachInfo({
+        coach_uid: coach,
+        coach_name: response.data.coach_name || `Coach ${coach}`,
+        train_Number: response.data.train_Number,
+        train_Name: response.data.train_Name || 'Unknown Train'
+      });
+    } catch (error) {
+      // Coach isn't currently registered to any train — the header will
+      // fall back to its most recent historical record instead.
+      console.warn("Coach has no current train assignment:", error.response?.data || error.message);
+      setCoachInfo(null);
+    }
+  };
+
   useEffect(() => {
     fetchCoachData();
-    const interval = setInterval(fetchCoachData, 5000);
+    fetchCurrentAssignment();
+    const interval = setInterval(() => {
+      fetchCoachData();
+      fetchCurrentAssignment();
+    }, 5000);
     return () => clearInterval(interval);
   }, [trainNumber, coach]);
+
+  const displayInfo = coachInfo || fallbackInfo;
 
   const handleDownloadPdf = () => {
     console.log("PDF download initiated.");
@@ -106,9 +140,9 @@ const CoachDetails = () => {
       // Metadata
       doc.setFontSize(10);
       doc.setFont(undefined, 'normal');
-      doc.text(`Train: ${coachInfo?.train_Name || trainNumber} (${trainNumber})`, marginLeft, yPosition);
+      doc.text(`Train: ${displayInfo?.train_Name || trainNumber} (${displayInfo?.train_Number || trainNumber})`, marginLeft, yPosition);
       yPosition += 6;
-      doc.text(`Coach: ${coachInfo?.coach_name || 'Unknown'} (UID: ${coach})`, marginLeft, yPosition);
+      doc.text(`Coach: ${displayInfo?.coach_name || 'Unknown'} (UID: ${coach})`, marginLeft, yPosition);
       yPosition += 6;
       doc.text(`Generated: ${new Date().toLocaleString()}`, marginLeft, yPosition);
       yPosition += 6;
@@ -308,10 +342,10 @@ const CoachDetails = () => {
           <h1 className="text-4xl font-bold text-white mb-4">Coach Details Dashboard</h1>
           <div className="text-purple-200 space-y-2">
             <p className="text-lg">
-              <span className="font-semibold">Train:</span> {coachInfo?.train_Name || 'Loading...'} ({coachInfo?.train_Number || trainNumber})
+              <span className="font-semibold">Train:</span> {displayInfo?.train_Name || 'Loading...'} ({displayInfo?.train_Number || trainNumber})
             </p>
             <p className="text-lg">
-              <span className="font-semibold">Coach:</span> {coachInfo?.coach_name || 'Loading...'} <span className="ml-2 text-sm">UID: {coach}</span>
+              <span className="font-semibold">Coach:</span> {displayInfo?.coach_name || 'Loading...'} <span className="ml-2 text-sm">UID: {coach}</span>
             </p>
             <p className="text-sm text-purple-300 mt-4">
               🔴 Live Data - Updates every 5 seconds
