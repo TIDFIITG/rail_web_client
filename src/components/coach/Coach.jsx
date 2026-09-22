@@ -308,7 +308,7 @@ const CoachDetails = () => {
           <h1 className="text-4xl font-bold text-white mb-4">Coach Details Dashboard</h1>
           <div className="text-purple-200 space-y-2">
             <p className="text-lg">
-              <span className="font-semibold">Train:</span> {coachInfo?.train_Name || 'Loading...'} ({trainNumber})
+              <span className="font-semibold">Train:</span> {coachInfo?.train_Name || 'Loading...'} ({coachInfo?.train_Number || trainNumber})
             </p>
             <p className="text-lg">
               <span className="font-semibold">Coach:</span> {coachInfo?.coach_name || 'Loading...'} <span className="ml-2 text-sm">UID: {coach}</span>
