@@ -27,7 +27,7 @@ const AUTHORITIES = [
   {
     id: "nfr-gm",
     name: "Shri Chetan Kumar Shrivastava",
-    designation: "General Manager, North Frontier Railway",
+    designation: "General Manager, North East Frontier Railway",
     image: GM,
   },
   {
