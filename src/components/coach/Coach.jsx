@@ -10,6 +10,24 @@ import { MapPinned } from "lucide-react";
 
 // Cache invalidation: v2.0
 
+// The table shows each record's device-reported date/time (the actual event
+// time), so it must also be SORTED by that same value — not by createdAt
+// (upload time), which can lag behind if the device buffered readings while
+// offline and uploaded a backlog later. Sorting by createdAt while displaying
+// event time is what made rows look out of order.
+const parseEventTimestamp = (record) => {
+  try {
+    const [day, month, year] = (record.date || "").split("/").map(Number);
+    const [hour = 0, minute = 0, second = 0] = (record.time || "").split(":").map(Number);
+    if (!day || !month || !year) throw new Error("incomplete date");
+    const ts = Date.UTC(year, month - 1, day, hour, minute, second);
+    if (Number.isNaN(ts)) throw new Error("invalid date");
+    return ts;
+  } catch {
+    return record.createdAt ? new Date(record.createdAt).getTime() : 0;
+  }
+};
+
 const CoachDetails = () => {
   const { trainNumber, coach } = useParams();
   console.log("CoachDetails component loaded.");
@@ -46,12 +64,9 @@ const CoachDetails = () => {
       console.log("API Response:", response.data);
 
       if (response.data.train?.length > 0) {
-        const sortedData = response.data.train.sort((a, b) => {
-          if (a.createdAt && b.createdAt) {
-            return new Date(b.createdAt) - new Date(a.createdAt);
-          }
-          return new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`);
-        });
+        const sortedData = response.data.train
+          .slice()
+          .sort((a, b) => parseEventTimestamp(b) - parseEventTimestamp(a));
 
         setCoachData(sortedData);
 
