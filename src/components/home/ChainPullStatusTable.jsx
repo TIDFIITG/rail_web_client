@@ -1,17 +1,32 @@
 import PropTypes from "prop-types";
 
-const formatDate = (isoString) => {
-  if (!isoString) return "—";
-  return new Date(isoString).toLocaleDateString("en-IN", {
+// The device stamps `date`/`time` with the actual moment the event happened
+// (GPS-synced, already in IST). `createdAt` is only when the upload reached
+// the server, which can lag well behind if the device was offline and is
+// flushing a buffered backlog — so event time, not upload time, is what's
+// shown here.
+const parseDeviceDateTime = (dateStr, timeStr) => {
+  if (!dateStr || !timeStr) return null;
+  const [day, month, year] = dateStr.split("/").map(Number);
+  const [hour, minute, second] = timeStr.split(":").map(Number);
+  if (!day || !month || !year) return null;
+  return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+};
+
+const formatEventDate = (dateStr, timeStr) => {
+  const parsed = parseDeviceDateTime(dateStr, timeStr);
+  if (!parsed) return dateStr || "—";
+  return parsed.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
 };
 
-const formatTime = (isoString) => {
-  if (!isoString) return "—";
-  return new Date(isoString).toLocaleTimeString("en-IN", {
+const formatEventTime = (dateStr, timeStr) => {
+  const parsed = parseDeviceDateTime(dateStr, timeStr);
+  if (!parsed) return timeStr || "—";
+  return parsed.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -79,8 +94,8 @@ const ChainPullStatusTable = ({
               <span className="truncate font-medium">{alert.train_Name || "—"}</span>
               <span className="truncate">{alert.train_Number || "—"}</span>
               <span className="truncate">{alert.coach_name || alert.coach_uid || "—"}</span>
-              <span className="truncate">{formatDate(alert.createdAt)}</span>
-              <span className="truncate">{formatTime(alert.createdAt)}</span>
+              <span className="truncate">{formatEventDate(alert.date, alert.time)}</span>
+              <span className="truncate">{formatEventTime(alert.date, alert.time)}</span>
               <button
                 type="button"
                 onClick={() => onViewDetails(alert)}

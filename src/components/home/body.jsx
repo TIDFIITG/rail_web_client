@@ -46,18 +46,31 @@ function Body() {
     return () => clearInterval(interval);
   }, []);
 
-  const formatAlertDate = (isoString) => {
-    if (!isoString) return "—";
-    return new Date(isoString).toLocaleDateString("en-IN", {
+  // Show the device's own event time (already IST), not createdAt — the
+  // device may have been offline and uploaded this reading well after the
+  // fact, so createdAt can lag the real event by hours, days, or more.
+  const parseDeviceDateTime = (dateStr, timeStr) => {
+    if (!dateStr || !timeStr) return null;
+    const [day, month, year] = dateStr.split("/").map(Number);
+    const [hour, minute, second] = timeStr.split(":").map(Number);
+    if (!day || !month || !year) return null;
+    return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+  };
+
+  const formatAlertDate = (dateStr, timeStr) => {
+    const parsed = parseDeviceDateTime(dateStr, timeStr);
+    if (!parsed) return dateStr || "—";
+    return parsed.toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
   };
 
-  const formatAlertTime = (isoString) => {
-    if (!isoString) return "—";
-    return new Date(isoString).toLocaleTimeString("en-IN", {
+  const formatAlertTime = (dateStr, timeStr) => {
+    const parsed = parseDeviceDateTime(dateStr, timeStr);
+    if (!parsed) return timeStr || "—";
+    return parsed.toLocaleTimeString("en-IN", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
@@ -165,10 +178,10 @@ function Body() {
                     {alert.coach_name || alert.coach_uid || "—"}
                   </span>
                   <span className="truncate text-railway-text/80">
-                    {formatAlertDate(alert.createdAt)}
+                    {formatAlertDate(alert.date, alert.time)}
                   </span>
                   <span className="truncate text-railway-text/80">
-                    {formatAlertTime(alert.createdAt)}
+                    {formatAlertTime(alert.date, alert.time)}
                   </span>
                   <div className="flex items-center gap-2">
                     <button
