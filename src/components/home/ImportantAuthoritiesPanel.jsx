@@ -21,7 +21,7 @@ const AUTHORITIES = [
   {
     id: "rail-minister",
     name: "Shri Ashwini Vaishnaw",
-    designation: "Railway Minister",
+    designation: "Railway Minister, India",
     image: RailwayMinister,
   },
   {
@@ -39,7 +39,7 @@ const AUTHORITIES = [
   {
     id: "project-director",
     name: "Prof. S. K. Dwivedy",
-    designation: "Project Director, Technology Innovation Hub",
+    designation: "Project Director, Technology Innovation Hub, IIT Guwahati",
     image: PD,
   },
 ];
