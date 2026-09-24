@@ -2,14 +2,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { IoArrowBack, IoTrainOutline, IoLocationOutline, IoBusinessOutline, IoTicketOutline, IoAdd, IoTrash } from "react-icons/io5";
+import { IoArrowBack, IoTrainOutline, IoBusinessOutline, IoTicketOutline, IoAdd, IoTrash } from "react-icons/io5";
 
 const API_BASE = "https://rail-web-server-r7z1.onrender.com";
 
 const emptyTrain = {
   division: "",
-  states: "",
-  cities: "",
   train_Name: "",
   train_Number: ""
 };
@@ -30,8 +28,6 @@ const AddTrainBody = () => {
       const t = location.state.train;
       return {
         division: t.division || "",
-        states: t.states || "",
-        cities: t.cities || "",
         train_Name: t.train_Name || "",
         train_Number: t.train_Number || ""
       };
@@ -121,7 +117,7 @@ const AddTrainBody = () => {
     setIsLoading(true);
 
     // field validation
-    const required = ["division", "states", "cities", "train_Name", "train_Number"];
+    const required = ["division", "train_Name", "train_Number"];
     for (const k of required) {
       if (!trainData[k]) {
         setMessage("⚠️ All fields are required!");
@@ -146,8 +142,6 @@ const AddTrainBody = () => {
 
     const payload = {
       division: trainData.division,
-      states: trainData.states,
-      cities: trainData.cities,
       train_Name: trainData.train_Name,
       train_Number: trainData.train_Number,
       coach_uid: val.data // array of { uid, coach_name }
@@ -269,11 +263,11 @@ const AddTrainBody = () => {
             </div>
           )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Division */}
+              {/* Zone (stored as `division`) */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
                   <IoBusinessOutline className="mr-2 text-indigo-500" />
-                  Division
+                  Zone
                 </label>
                 <div className="relative">
                   <select
@@ -283,7 +277,7 @@ const AddTrainBody = () => {
                     className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 appearance-none cursor-pointer hover:border-gray-300"
                     required
                   >
-                    <option value="" disabled>Select Division</option>
+                    <option value="" disabled>Select Zone</option>
                     {divisions.map((d) => (
                       <option key={d} value={d}>
                         {d}
@@ -296,40 +290,6 @@ const AddTrainBody = () => {
                     </svg>
                   </div>
                 </div>
-              </div>
-
-              {/* State */}
-              <div className="space-y-2">
-                <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                  <IoLocationOutline className="mr-2 text-indigo-500" />
-                  State
-                </label>
-                <input
-                  type="text"
-                  name="states"
-                  placeholder="Enter state name"
-                  value={trainData.states}
-                  onChange={handleChange}
-                  className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 placeholder-gray-400 hover:border-gray-300"
-                  required
-                />
-              </div>
-
-              {/* City */}
-              <div className="space-y-2">
-                <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                  <IoLocationOutline className="mr-2 text-indigo-500" />
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="cities"
-                  placeholder="Enter city name"
-                  value={trainData.cities}
-                  onChange={handleChange}
-                  className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 placeholder-gray-400 hover:border-gray-300"
-                  required
-                />
               </div>
 
               {/* Train Name */}
@@ -477,7 +437,7 @@ const AddTrainBody = () => {
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Ensure all information is accurate before submitting</li>
                 <li>• Train numbers should be unique across the system</li>
-                <li>• Division codes: NFR, ER, WR, SER, SR, NWR</li>
+                <li>• Zone codes: NFR, ER, WR, SER, SR, NWR</li>
                 <li>• Add at least one coach (UID must be numeric, no duplicates)</li>
                 <li>• Contact support if you encounter any issues</li>
               </ul>
