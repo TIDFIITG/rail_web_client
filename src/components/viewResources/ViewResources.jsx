@@ -218,29 +218,9 @@ const ViewResources = () => {
                   <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold">🏢</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-700">Division</h3>
+                  <h3 className="text-lg font-semibold text-gray-700">Zone</h3>
                 </div>
                 <p className="text-xl font-bold text-gray-900">{data.division}</p>
-              </div>
-
-              <div className="group p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white font-bold">🗺️</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-700">State</h3>
-                </div>
-                <p className="text-xl font-bold text-gray-900">{data.states}</p>
-              </div>
-
-              <div className="group p-6 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border border-teal-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-white font-bold">🏙️</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-700">City</h3>
-                </div>
-                <p className="text-xl font-bold text-gray-900">{data.cities}</p>
               </div>
             </div>
           </div>

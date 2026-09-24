@@ -13,9 +13,7 @@ const ResourceCard = ({ data }) => {
         </h2>
         <div classNamename="space-y-2 text-gray-700">
           <p className="font-medium"><span className="font-semibold text-gray-800">Train Number:</span> {data.train_Number}</p>
-          <p className="font-medium"><span className="font-semibold text-gray-800">Division:</span> {data.division}</p>
-          <p className="font-medium"><span className="font-semibold text-gray-800">State:</span> {data.states}</p>
-          <p className="font-medium"><span className="font-semibold text-gray-800">City:</span> {data.cities}</p>
+          <p className="font-medium"><span className="font-semibold text-gray-800">Zone:</span> {data.division}</p>
         </div>
       </div>
     </Link>
@@ -28,8 +26,6 @@ ResourceCard.propTypes = {
     train_Name: PropTypes.string.isRequired,
     train_Number: PropTypes.string.isRequired,
     division: PropTypes.string.isRequired,
-    states: PropTypes.string.isRequired,
-    cities: PropTypes.string.isRequired,
     _id: PropTypes.string.isRequired,
   }).isRequired,
 };

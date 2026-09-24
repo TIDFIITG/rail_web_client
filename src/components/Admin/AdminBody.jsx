@@ -13,7 +13,6 @@ import {
     IoLogOutOutline,
     IoSettingsOutline,
     IoEyeOutline,
-    IoLocationOutline,
     IoTicketOutline,
     IoSendOutline,
     IoCloseOutline,
@@ -514,15 +513,8 @@ const AdminBody = () => {
                                                             <IoTicketOutline className="text-purple-500" />
                                                             <span className="text-gray-600">#{train.train_Number}</span>
                                                         </div>
-                                                        <div className="flex items-center space-x-2 mr-4">
-                                                            <IoLocationOutline className="text-green-500" />
-                                                            <span className="text-gray-600">{train.cities}</span>
-                                                        </div>
                                                         <div className="flex items-center space-x-2 mr-4 text-sm text-gray-500">
-                                                            <span>Division: {train.division}</span>
-                                                        </div>
-                                                        <div className="flex items-center space-x-2 mr-4 text-sm text-gray-500">
-                                                            <span>States: {train.states}</span>
+                                                            <span>Zone: {train.division}</span>
                                                         </div>
                                                         <div className="flex items-center space-x-2 mr-4 text-sm text-blue-600">
                                                             <span>Coaches: {train.coach_uid ? train.coach_uid.length : 0}</span>

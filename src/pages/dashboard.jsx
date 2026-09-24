@@ -108,8 +108,6 @@ const Dashboard = () => {
   const [stats, setStats] = useState({
     totalTrains: 0,
     totalDivisions: 0,
-    totalStates: 0,
-    totalCities: 0,
   });
   const [now, setNow] = useState(new Date());
   const [lastSync, setLastSync] = useState(null);
@@ -142,14 +140,10 @@ const Dashboard = () => {
   // Calculate stats from data
   const calculateStats = (rows) => {
     const uniqueDivisions = new Set(rows.map((item) => item.division)).size;
-    const uniqueStates = new Set(rows.map((item) => item.state)).size;
-    const uniqueCities = new Set(rows.map((item) => item.cities)).size;
 
     setStats({
       totalTrains: rows.length,
       totalDivisions: uniqueDivisions,
-      totalStates: uniqueStates,
-      totalCities: uniqueCities,
     });
   };
 
@@ -167,8 +161,6 @@ const Dashboard = () => {
             trainName: item.train_Name || "",
             trainNumber: item.train_Number || "",
             division: item.division || "",
-            state: item.states || "",
-            cities: item.cities || "",
           }));
           setData(formattedData);
           setFilteredData(formattedData);
@@ -192,9 +184,7 @@ const Dashboard = () => {
       return (
         item.trainName?.toLowerCase().includes(lowerSearchTerm) ||
         item.trainNumber?.toString().includes(lowerSearchTerm) ||
-        item.division?.toLowerCase().includes(lowerSearchTerm) ||
-        item.state?.toLowerCase().includes(lowerSearchTerm) ||
-        item.cities?.toLowerCase().includes(lowerSearchTerm)
+        item.division?.toLowerCase().includes(lowerSearchTerm)
       );
     });
     setFilteredData(filtered);
@@ -216,9 +206,7 @@ const Dashboard = () => {
 
   const STAT_CARDS = [
     { label: "Total Trains", value: stats.totalTrains, icon: Icon.Train, bg: "bg-blue-100", text: "text-blue-600" },
-    { label: "Divisions", value: stats.totalDivisions, icon: Icon.Building, bg: "bg-emerald-100", text: "text-emerald-600" },
-    { label: "States", value: stats.totalStates, icon: Icon.Pin, bg: "bg-purple-100", text: "text-purple-600" },
-    { label: "Cities", value: stats.totalCities, icon: Icon.Building, bg: "bg-orange-100", text: "text-orange-600" },
+    { label: "Zones", value: stats.totalDivisions, icon: Icon.Building, bg: "bg-emerald-100", text: "text-emerald-600" },
   ];
 
   return (
@@ -248,7 +236,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 gap-4 mb-10">
           {STAT_CARDS.map((card) => (
             <div key={card.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
               <div className="flex items-start justify-between mb-4">
@@ -282,7 +270,7 @@ const Dashboard = () => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search trains by name, number, division, state, or city..."
+                placeholder="Search trains by name, number, or zone..."
                 className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
               />
             </div>
@@ -308,9 +296,7 @@ const Dashboard = () => {
                   <tr className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     <th className="px-6 py-3">Train Name</th>
                     <th className="px-6 py-3">Train Number</th>
-                    <th className="px-6 py-3">Division</th>
-                    <th className="px-6 py-3">State</th>
-                    <th className="px-6 py-3">City</th>
+                    <th className="px-6 py-3">Zone</th>
                     <th className="px-6 py-3 text-right">Action</th>
                   </tr>
                 </thead>
@@ -331,8 +317,6 @@ const Dashboard = () => {
                           {item.division}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-500">{item.state}</td>
-                      <td className="px-6 py-4 text-slate-500">{item.cities}</td>
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => navigate(`/division-id/${item._id}`)}
